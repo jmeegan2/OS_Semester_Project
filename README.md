@@ -24,9 +24,9 @@ Once the simulation is running, you can use the GUI to navigate through the file
 
 # Authors
 * James Meegan
-* Lazy Bastard 1 
-* Lazy Bastard 2 
-* Lazy Bastard 3 
+* Anthony Saporito
+* Lesley Hernandez
+* Caleb Blomquist
 
 # License
 This project is licensed under the MIT License - see the LICENSE file for details.
