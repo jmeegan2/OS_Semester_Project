@@ -23,34 +23,76 @@ public class GUIInterface extends JFrame implements ActionListener {
         JLabel currentDirectoryLabel = new JLabel("Current directory: ");
         JLabel currentDirectoryName = new JLabel(this.fileSystem.getCurrentDirectory().getName());
 
-        contentsPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        JButton createButton = new JButton("Create");
+        // add padding to the currentDirectoryPanel
+        this.currentDirectoryPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        // create buttons with icons and set their backgrounds and font colors
+        JButton createButton = new JButton("Create", new ImageIcon("create.png"));
+        createButton.setPreferredSize(new Dimension(120, 30)); // increase button size
+        createButton.setBackground(Color.WHITE);
+        createButton.setForeground(Color.DARK_GRAY);
         createButton.addActionListener(this);
 
-        JButton deleteButton = new JButton("Delete");
-        deleteButton.addActionListener(this);
+        JButton deleteButton = new JButton("Delete", new ImageIcon("delete.png"));
+        deleteButton.setBackground(Color.WHITE);
+        deleteButton.setForeground(Color.DARK_GRAY);
+        deleteButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // code to execute when deleteButton is clicked
+                String fileName = createField.getText();
+                fileSystem.deleteFile(fileName);
+                refreshContents();
+                createField.setText("");
+            }
+        });
 
-        JButton editButton = new JButton("Edit");
+
+        JButton editButton = new JButton("Edit", new ImageIcon("edit.png"));
+        editButton.setPreferredSize(new Dimension(120, 30)); // increase button size
+        editButton.setBackground(Color.WHITE);
+        editButton.setForeground(Color.DARK_GRAY);
         editButton.addActionListener(this);
 
-        JButton changeDirectoryButton = new JButton("Change Directory");
+        JButton changeDirectoryButton = new JButton("Change Directory", new ImageIcon("change.png"));
+        changeDirectoryButton.setPreferredSize(new Dimension(150, 30)); // increase button size
+        changeDirectoryButton.setBackground(Color.WHITE);
+        changeDirectoryButton.setForeground(Color.DARK_GRAY);
         changeDirectoryButton.addActionListener(this);
 
-        JButton refreshButton = new JButton("Refresh");
+        JButton refreshButton = new JButton("Refresh", new ImageIcon("refresh.png"));
+        refreshButton.setPreferredSize(new Dimension(120, 30)); // increase button size
+        refreshButton.setBackground(Color.WHITE);
+        refreshButton.setForeground(Color.DARK_GRAY);
         refreshButton.addActionListener(this);
 
+        // add buttons to the buttonPanel with padding
         JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(1, 5, 10, 10)); // add padding between buttons
+        buttonPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         buttonPanel.add(createButton);
         buttonPanel.add(deleteButton);
         buttonPanel.add(editButton);
         buttonPanel.add(changeDirectoryButton);
         buttonPanel.add(refreshButton);
 
+        // set font styles and sizes for labels
+        currentDirectoryLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        currentDirectoryName.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        // add components to the currentDirectoryPanel
         this.currentDirectoryPanel.add(currentDirectoryLabel);
         this.currentDirectoryPanel.add(currentDirectoryName);
         this.currentDirectoryPanel.add(this.createField);
         this.currentDirectoryPanel.add(buttonPanel);
 
+        // set backgrounds for panels
+        this.currentDirectoryPanel.setBackground(Color.LIGHT_GRAY);
+        this.contentsPanel.setBackground(Color.WHITE);
+
+// add padding to the contentsPanel
+        this.contentsPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+// add panels to the main frame
         this.add(this.currentDirectoryPanel, BorderLayout.NORTH);
         this.add(this.contentsPanel, BorderLayout.CENTER);
 
@@ -58,6 +100,8 @@ public class GUIInterface extends JFrame implements ActionListener {
         this.pack();
         this.setVisible(true);
     }
+
+
 
     public void actionPerformed(ActionEvent e) {
         System.out.println("Action Performed");
