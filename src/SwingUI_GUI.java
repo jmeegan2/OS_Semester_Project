@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -15,11 +14,19 @@ public class SwingUI_GUI extends JFrame {
     private JList<String> list1; // Updated to JList
     private JPanel ListArea;
     private JButton RefreshBTN;
+    private JTextField CreateTextField;
+    private JPanel CreatePanel;
+    private JButton SendBTN_Create;
+    private JPanel DeletePanel;
+    private JButton SendBTN_Delete;
+    private JTextField DeleteTextField;
+    private JLabel DeleteLabel;
     private FileSystem fileSystem;
 
     public SwingUI_GUI(String title) {
         super(title);
         this.fileSystem = new FileSystem();
+
 
         SearchBTN.setPreferredSize(new Dimension(200, 75));
         DeleteBTN.setPreferredSize(new Dimension(200, 75));
@@ -36,10 +43,40 @@ public class SwingUI_GUI extends JFrame {
         this.setLocationRelativeTo(null);
 
         refreshListArea();
-        RefreshBTN.addActionListener(new ActionListener() {
+        RefreshBTN.addActionListener(e -> refreshListArea());
+
+        CreatePanel.setVisible(false);
+        CreateBTN.addActionListener(e -> togglePanelVisibility(CreatePanel));
+
+        SendBTN_Create.addActionListener(e -> {
+            String fileNameCreate = CreateTextField.getText();
+            if (!fileNameCreate.isEmpty()) {
+                fileSystem.createFile(fileNameCreate);
+                refreshListArea();
+                CreatePanel.setVisible(false);
+            }
+        });
+        DeletePanel.setVisible(false);
+        DeleteBTN.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                refreshListArea();
+                togglePanelVisibility(DeletePanel);
+            }
+        });
+        SendBTN_Delete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String fileNameDelete = DeleteTextField.getText();
+                if (!fileNameDelete.isEmpty()) {
+                    if (fileSystem.isFileExists(fileNameDelete)) {
+                        fileSystem.deleteFile(fileNameDelete);
+                        refreshListArea();
+                        DeleteTextField.setText("");
+                        JOptionPane.showMessageDialog(SwingUI_GUI.this, "File " + fileNameDelete +" has been deleted");
+                    } else {
+                        JOptionPane.showMessageDialog(SwingUI_GUI.this, "File does not exist!");
+                    }
+                }
             }
         });
     }
@@ -49,13 +86,9 @@ public class SwingUI_GUI extends JFrame {
         frame.setSize(1250, 1000);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
-
         FileSystem fileSystem = new FileSystem();
         frame.setFileSystem(fileSystem);
-        fileSystem.createDirectory("documents");
-        fileSystem.createFile("documents/report.txt");
-        fileSystem.createDirectory("images");
-        fileSystem.createFile("images/photo.jpg");
+        InitialValues.initializeFileSystem(fileSystem);
 
     }
 
@@ -71,4 +104,9 @@ public class SwingUI_GUI extends JFrame {
     public void setFileSystem(FileSystem fileSystem) {
         this.fileSystem = fileSystem;
     }
+    private void togglePanelVisibility(JPanel panel) {
+        boolean isPanelVisible = panel.isVisible(); // Get the current visibility state
+        panel.setVisible(!isPanelVisible); // Toggle the visibility of the panel
+    }
 }
+

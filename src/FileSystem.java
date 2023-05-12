@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class FileSystem {
     private RootDirectory rootDirectory;
     private Directory currentDirectory;
@@ -40,7 +42,16 @@ public class FileSystem {
             }
         }
     }
-
+    public boolean isFileExists(String fileName) {
+        Directory currentDirectory = getCurrentDirectory();
+        List<File> files = currentDirectory.getFiles();
+        for (File file : files) {
+            if (file.getName().equals(fileName)) {
+                return true; // File exists
+            }
+        }
+        return false; // File does not exist
+    }
     public void createFile(String name) {
         this.currentDirectory.addFile(new File(name, null));
     }
