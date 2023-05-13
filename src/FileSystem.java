@@ -14,6 +14,8 @@ public class FileSystem {
         return this.currentDirectory;
     }
 
+
+
     public void changeDirectory(String path) {
         if (path.equals("/")) {
             this.currentDirectory = this.rootDirectory;
@@ -43,6 +45,15 @@ public class FileSystem {
             }
         }
     }
+    public String searchFile(String fileName) {
+        if (isFileExists(fileName)) {
+            String directory = getCurrentDirectory().getName();
+            return "File '" + fileName + "' exists\nDirectory: " + getCurrentDirectory();
+        } else {
+            return "File '" + fileName + "' does not exist";
+        }
+    }
+
     public boolean isFileExists(String fileName) {
         Directory currentDirectory = getCurrentDirectory();
         List<File> files = currentDirectory.getFiles();

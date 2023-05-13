@@ -27,7 +27,9 @@ public class SwingUI_GUI extends JFrame {
     private JLabel updatelabel;
     private JTextField InnerUpdateTextField;
     private JLabel searchLabel;
-    private JTextField textField1;
+    private JTextField SearchTextField;
+    private JButton SendBTN_Search;
+    private JPanel SearchPanel;
     private FileSystem fileSystem;
 
     public SwingUI_GUI(String title) {
@@ -112,6 +114,26 @@ public class SwingUI_GUI extends JFrame {
                 }
             }
         });
+        SearchPanel.setVisible(false);
+        SearchBTN.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            togglePanelVisibility(SearchPanel);
+            }
+        });
+        SendBTN_Search.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String fileToBeSearched = SearchTextField.getText();
+                String result = fileSystem.searchFile(fileToBeSearched);
+                JOptionPane.showMessageDialog(SwingUI_GUI.this, result);
+                SearchTextField.setText(""); // Clear the SearchTextField
+                SearchPanel.setVisible(false); // Hide the SearchPanel
+            }
+        });
+
+
+
     }
 
     public static void main(String[] args) {
