@@ -1,11 +1,7 @@
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.util.List;
 
 public class SwingUI_GUI extends JFrame {
@@ -15,7 +11,7 @@ public class SwingUI_GUI extends JFrame {
     private JButton DeleteBTN;
     private JButton UpdateBTN;
     private JButton CreateBTN;
-    private JList<String> list1; // Updated to JList
+    private JList<String> MainListArea; // Updated to JList
     private JPanel ListArea;
     private JButton RefreshBTN;
     private JTextField CreateTextField;
@@ -34,12 +30,19 @@ public class SwingUI_GUI extends JFrame {
     private JTextField SearchTextField;
     private JButton SendBTN_Search;
     private JPanel SearchPanel;
+    private JPanel FileInformationWindow;
+    private JTextField FileInformationWindowTextField;
+    private JButton FavoriteButton;
+    private JList FavoriteList;
+    private JButton CloseBTN;
+    private DefaultListModel<String> FavoriteListModel;
     private FileSystem fileSystem;
 
     public SwingUI_GUI(String title) {
         super(title);
         this.fileSystem = new FileSystem();
-
+        FavoriteListModel = new DefaultListModel<>();
+        FavoriteList.setModel(FavoriteListModel);
 
         SearchBTN.setPreferredSize(new Dimension(200, 75));
         DeleteBTN.setPreferredSize(new Dimension(200, 75));
@@ -47,8 +50,8 @@ public class SwingUI_GUI extends JFrame {
         CreateBTN.setPreferredSize(new Dimension(200, 75));
         RefreshBTN.setPreferredSize(new Dimension(200, 75));
 
-        list1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // Set selection mode
-        list1.setLayoutOrientation(JList.VERTICAL); // Set layout orientation
+        MainListArea.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // Set selection mode
+        MainListArea.setLayoutOrientation(JList.VERTICAL); // Set layout orientation
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setContentPane(MainPanel);
@@ -136,13 +139,38 @@ public class SwingUI_GUI extends JFrame {
             }
         });
 
-
-        list1.addListSelectionListener(e -> {
+        FileInformationWindow.setVisible(false);
+        MainListArea.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                String selectedFileName = list1.getSelectedValue();
+                String selectedFileName = MainListArea.getSelectedValue();
                 if (selectedFileName != null) {
-                    JOptionPane.showMessageDialog(SwingUI_GUI.this, selectedFileName);
+                    // Retrieve the file information based on the selected file name
+
+
+                    // Update the FileInformationWindow components
+                    togglePanelVisibility(FileInformationWindow);
+                    FileInformationWindowTextField.setText(selectedFileName);
+
                 }
+            }
+        });
+
+
+        FavoriteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String fileToBeAddedToFavoriteList = FileInformationWindowTextField.getText();
+                if (FavoriteListModel.contains(fileToBeAddedToFavoriteList)) {
+                    JOptionPane.showMessageDialog(SwingUI_GUI.this, "File is already in the favorite list!");
+                } else {
+                    FavoriteListModel.addElement(fileToBeAddedToFavoriteList);
+                }
+            }
+        });
+        CloseBTN.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                togglePanelVisibility(FileInformationWindow);
             }
         });
     }
@@ -165,7 +193,7 @@ public class SwingUI_GUI extends JFrame {
             model.addElement(file.getName()); // Add file name to the model
         }
 
-        list1.setModel(model); // Set the model to the JList
+        MainListArea.setModel(model); // Set the model to the JList
     }
     public void setFileSystem(FileSystem fileSystem) {
         this.fileSystem = fileSystem;
@@ -175,5 +203,8 @@ public class SwingUI_GUI extends JFrame {
         panel.setVisible(!isPanelVisible); // Toggle the visibility of the panel
     }
 
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+    }
 }
 
