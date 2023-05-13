@@ -1,7 +1,11 @@
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.List;
 
 public class SwingUI_GUI extends JFrame {
@@ -133,7 +137,14 @@ public class SwingUI_GUI extends JFrame {
         });
 
 
-
+        list1.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                String selectedFileName = list1.getSelectedValue();
+                if (selectedFileName != null) {
+                    JOptionPane.showMessageDialog(SwingUI_GUI.this, selectedFileName);
+                }
+            }
+        });
     }
 
     public static void main(String[] args) {
