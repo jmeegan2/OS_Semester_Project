@@ -4,6 +4,7 @@ public class FileSystem {
     private RootDirectory rootDirectory;
     private Directory currentDirectory;
 
+
     public FileSystem() {
         this.rootDirectory = new RootDirectory();
         this.currentDirectory = this.rootDirectory;
@@ -81,6 +82,18 @@ public class FileSystem {
 
         System.out.println("Directory not found: " + name);
     }
+
+    public void updateFile(String fileName, String newName) {
+        List<File> files = currentDirectory.getFiles();
+        for (File file : files) {
+            if (file.getName().equals(fileName)) {
+                file.setName(newName);
+                return;
+            }
+        }
+        throw new IllegalArgumentException("File not found: " + fileName);
+    }
+
 
     public void listContents() {
         System.out.println("Contents of directory " + this.currentDirectory.getName() + ":");

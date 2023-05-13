@@ -21,6 +21,13 @@ public class SwingUI_GUI extends JFrame {
     private JButton SendBTN_Delete;
     private JTextField DeleteTextField;
     private JLabel DeleteLabel;
+    private JButton SendBTN_Update;
+    private JTextField UpdateTextField;
+    private JPanel UpdatePanel;
+    private JLabel updatelabel;
+    private JTextField InnerUpdateTextField;
+    private JLabel searchLabel;
+    private JTextField textField1;
     private FileSystem fileSystem;
 
     public SwingUI_GUI(String title) {
@@ -79,6 +86,32 @@ public class SwingUI_GUI extends JFrame {
                 }
             }
         });
+        UpdatePanel.setVisible(false);
+        UpdateBTN.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                togglePanelVisibility(UpdatePanel);
+            }
+        });
+        SendBTN_Update.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String fileNameToUpdate = UpdateTextField.getText();
+                String newValueOfFile = InnerUpdateTextField.getText();
+
+                if (!fileNameToUpdate.isEmpty() && !newValueOfFile.isEmpty()) {
+                    if (fileSystem.isFileExists(fileNameToUpdate)) {
+                        fileSystem.updateFile(fileNameToUpdate, newValueOfFile);
+                        refreshListArea();
+                        UpdateTextField.setText(""); // Clear the UpdateTextField
+                        InnerUpdateTextField.setText(""); // Clear the InnerUpdateTextField
+                        JOptionPane.showMessageDialog(SwingUI_GUI.this, "File (" + fileNameToUpdate + ") has been updated");
+                    } else {
+                        JOptionPane.showMessageDialog(SwingUI_GUI.this, "File does not exist!");
+                    }
+                }
+            }
+        });
     }
 
     public static void main(String[] args) {
@@ -108,5 +141,6 @@ public class SwingUI_GUI extends JFrame {
         boolean isPanelVisible = panel.isVisible(); // Get the current visibility state
         panel.setVisible(!isPanelVisible); // Toggle the visibility of the panel
     }
+
 }
 

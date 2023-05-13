@@ -18,4 +18,8 @@ public class File {
     public void setData(Object data) {
         this.data = data;
     }
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }
