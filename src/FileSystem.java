@@ -37,6 +37,7 @@ public class FileSystem {
                     found = true;
                     break;
                 }
+
             }
 
             if (!found) {
@@ -46,10 +47,13 @@ public class FileSystem {
         }
     }
     public String searchFile(String fileName) {
+        boolean fileTrueOrFalse;
         if (isFileExists(fileName)) {
             String directory = getCurrentDirectory().getName();
+            fileTrueOrFalse = true;
             return "File '" + fileName + "' exists\nDirectory: " + getCurrentDirectory();
         } else {
+            fileTrueOrFalse = false;
             return "File '" + fileName + "' does not exist";
         }
     }

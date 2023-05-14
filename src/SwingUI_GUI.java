@@ -59,7 +59,6 @@ public class SwingUI_GUI extends JFrame {
         this.pack();
         this.setLocationRelativeTo(null);
 
-        refreshListArea(); // Call refreshListArea() to initially populate the file list
         RefreshBTN.addActionListener(e -> refreshListArea());
 
 
@@ -135,10 +134,20 @@ public class SwingUI_GUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String fileToBeSearched = SearchTextField.getText();
                 String result = fileSystem.searchFile(fileToBeSearched);
-                JOptionPane.showMessageDialog(SwingUI_GUI.this, result);
-                SearchTextField.setText(""); // Clear the SearchTextField
-                SearchPanel.setVisible(false); // Hide the SearchPanel
-            }
+                    if (fileSystem.isFileExists(fileToBeSearched)) {
+                        // Retrieve the file information based on the selected file name
+                        JOptionPane.showMessageDialog(SwingUI_GUI.this, result);
+                        SearchTextField.setText(""); // Clear the SearchTextField
+                        SearchPanel.setVisible(false); // Hide the SearchPanel
+                        // Update the FileInformationWindow components
+                        ActualListOfFilesPanel.setVisible(false);
+                        FileInformationWindowTextField.setText(fileToBeSearched);
+                        FileInformationWindow.setVisible(true);
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(SwingUI_GUI.this, result);
+                    }
+                }
         });
 
         FileInformationWindow.setVisible(false);
@@ -210,6 +219,7 @@ public class SwingUI_GUI extends JFrame {
         frame.setVisible(true); // Make the frame visible
 
         InitialValues.initializeFileSystem(fileSystem);
+        frame.refreshListArea();
     }
 
 
