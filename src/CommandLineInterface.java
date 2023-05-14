@@ -37,7 +37,7 @@ public class CommandLineInterface {
                     if (commands.length != 2) {
                         System.out.println("Invalid command: touch requires a file name");
                     } else {
-                        this.fileSystem.createFile(commands[1]);
+//                        this.fileSystem.createFile(commands[1]);
                     }
                     break;
                 case "rm":

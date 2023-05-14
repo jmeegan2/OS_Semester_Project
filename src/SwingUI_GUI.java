@@ -65,14 +65,14 @@ public class SwingUI_GUI extends JFrame {
         CreatePanel.setVisible(false);
         CreateBTN.addActionListener(e -> togglePanelVisibility(CreatePanel));
 
-        SendBTN_Create.addActionListener(e -> {
-            String fileNameCreate = CreateTextField.getText();
-            if (!fileNameCreate.isEmpty()) {
-                fileSystem.createFile(fileNameCreate);
-                refreshListArea();
-                CreatePanel.setVisible(false);
-            }
-        });
+//        SendBTN_Create.addActionListener(e -> {
+//            String fileNameCreate = CreateTextField.getText();
+//            if (!fileNameCreate.isEmpty()) {
+//                fileSystem.createFile(fileNameCreate);
+//                refreshListArea();
+//                CreatePanel.setVisible(false);
+//            }
+//        });
         DeletePanel.setVisible(false);
         DeleteBTN.addActionListener(new ActionListener() {
             @Override
@@ -218,7 +218,7 @@ public class SwingUI_GUI extends JFrame {
         frame.updateFileList(); // Populate the file list
         frame.setVisible(true); // Make the frame visible
 
-        InitialValues.initializeFileSystem(fileSystem);
+        SystemData.initializeFileSystem(fileSystem);
         frame.refreshListArea();
     }
 

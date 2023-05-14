@@ -68,8 +68,8 @@ public class FileSystem {
         }
         return false; // File does not exist
     }
-    public void createFile(String name) {
-        this.currentDirectory.addFile(new File(name, null));
+    public void createFile(String name, Object data, int size, String type) {
+        this.currentDirectory.addFile(new File(name, data, size, type));
     }
 
     public void createDirectory(String name) {
