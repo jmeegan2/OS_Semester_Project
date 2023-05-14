@@ -35,6 +35,7 @@ public class SwingUI_GUI extends JFrame {
     private JButton FavoriteButton;
     private JList FavoriteList;
     private JButton CloseBTN;
+    private JPanel ActualListOfFilesPanel;
     private DefaultListModel<String> FavoriteListModel;
     private FileSystem fileSystem;
 
@@ -149,7 +150,8 @@ public class SwingUI_GUI extends JFrame {
 
 
                     // Update the FileInformationWindow components
-                    togglePanelVisibility(FileInformationWindow);
+                    ActualListOfFilesPanel.setVisible(false);
+                    FileInformationWindow.setVisible(true);
                     FileInformationWindowTextField.setText(selectedFileName);
 
                 }
@@ -171,7 +173,23 @@ public class SwingUI_GUI extends JFrame {
         CloseBTN.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 togglePanelVisibility(FileInformationWindow);
+                togglePanelVisibility(ActualListOfFilesPanel);
+            }
+        });
+
+        FavoriteList.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                String selectedFileName = (String) FavoriteList.getSelectedValue();
+                if (selectedFileName != null) {
+                    // Retrieve the file information based on the selected file name
+                    // Update the FileInformationWindow components
+                    ActualListOfFilesPanel.setVisible(false);
+                    FileInformationWindow.setVisible(true);
+                    FileInformationWindowTextField.setText(selectedFileName);
+
+                }
             }
         });
     }
@@ -188,22 +206,6 @@ public class SwingUI_GUI extends JFrame {
 
         // Create initial files
         FileSystem fileSystem = frame.getFileSystem();
-        fileSystem.createFile("documents/report.txt");
-        fileSystem.createFile("documents/document.txt");
-        fileSystem.createFile("documents/note.txt");
-        fileSystem.createFile("images/photo.jpg");
-        fileSystem.createFile("images/picture.png");
-        fileSystem.createFile("images/image.jpg");
-        fileSystem.createFile("videos/video.mp4");
-        fileSystem.createFile("videos/movie.mp4");
-        fileSystem.createFile("videos/clip.mp4");
-        fileSystem.createFile("music/song.mp3");
-        fileSystem.createFile("music/track.mp3");
-        fileSystem.createFile("music/music.mp3");
-        fileSystem.createFile("downloads/file.zip");
-        fileSystem.createFile("downloads/data.zip");
-        fileSystem.createFile("downloads/archive.zip");
-
         frame.updateFileList(); // Populate the file list
         frame.setVisible(true); // Make the frame visible
 
