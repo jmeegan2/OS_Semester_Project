@@ -58,8 +58,9 @@ public class SwingUI_GUI extends JFrame {
         this.pack();
         this.setLocationRelativeTo(null);
 
-        refreshListArea();
+        refreshListArea(); // Call refreshListArea() to initially populate the file list
         RefreshBTN.addActionListener(e -> refreshListArea());
+
 
         CreatePanel.setVisible(false);
         CreateBTN.addActionListener(e -> togglePanelVisibility(CreatePanel));
@@ -174,27 +175,61 @@ public class SwingUI_GUI extends JFrame {
             }
         });
     }
+    public FileSystem getFileSystem() {
+        return fileSystem;
+    }
 
     public static void main(String[] args) {
         SwingUI_GUI frame = new SwingUI_GUI("File Simulation System 439");
         frame.setSize(1250, 1000);
-        frame.setVisible(true);
+        frame.setFileSystem(new FileSystem()); // Create a new instance of FileSystem
+        frame.createUIComponents(); // Create the UI components
         frame.setLocationRelativeTo(null);
-        FileSystem fileSystem = new FileSystem();
-        frame.setFileSystem(fileSystem);
-        InitialValues.initializeFileSystem(fileSystem);
 
+        // Create initial files
+        FileSystem fileSystem = frame.getFileSystem();
+        fileSystem.createFile("documents/report.txt");
+        fileSystem.createFile("documents/document.txt");
+        fileSystem.createFile("documents/note.txt");
+        fileSystem.createFile("images/photo.jpg");
+        fileSystem.createFile("images/picture.png");
+        fileSystem.createFile("images/image.jpg");
+        fileSystem.createFile("videos/video.mp4");
+        fileSystem.createFile("videos/movie.mp4");
+        fileSystem.createFile("videos/clip.mp4");
+        fileSystem.createFile("music/song.mp3");
+        fileSystem.createFile("music/track.mp3");
+        fileSystem.createFile("music/music.mp3");
+        fileSystem.createFile("downloads/file.zip");
+        fileSystem.createFile("downloads/data.zip");
+        fileSystem.createFile("downloads/archive.zip");
+
+        frame.updateFileList(); // Populate the file list
+        frame.setVisible(true); // Make the frame visible
+
+        InitialValues.initializeFileSystem(fileSystem);
     }
 
+
     private void refreshListArea() {
+      updateFileList();
+    }
+    private void updateFileList() {
         DefaultListModel<String> model = new DefaultListModel<>(); // Create a DefaultListModel
         List<File> files = fileSystem.getCurrentDirectory().getFiles();
+
         for (File file : files) {
-            model.addElement(file.getName()); // Add file name to the model
+            String fileName = file.getName();
+
+            // Check if the file is already present in the model
+            if (!model.contains(fileName)) {
+                model.addElement(fileName); // Add file name to the model
+            }
         }
 
         MainListArea.setModel(model); // Set the model to the JList
     }
+
     public void setFileSystem(FileSystem fileSystem) {
         this.fileSystem = fileSystem;
     }
