@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.List;
 
 public class SwingUI_GUI extends JFrame {
@@ -36,6 +38,7 @@ public class SwingUI_GUI extends JFrame {
     private JList FavoriteList;
     private JButton CloseBTN;
     private JPanel ActualListOfFilesPanel;
+    private JTextArea FileInfoTextArea;
     private DefaultListModel<String> FavoriteListModel;
     private FileSystem fileSystem;
 
@@ -156,8 +159,6 @@ public class SwingUI_GUI extends JFrame {
                 String selectedFileName = MainListArea.getSelectedValue();
                 if (selectedFileName != null) {
                     // Retrieve the file information based on the selected file name
-
-
                     // Update the FileInformationWindow components
                     ActualListOfFilesPanel.setVisible(false);
                     FileInformationWindow.setVisible(true);
@@ -201,6 +202,32 @@ public class SwingUI_GUI extends JFrame {
                 }
             }
         });
+        FileInfoTextArea.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                String selectedFileName = FileInformationWindowTextField.getText();
+                if (selectedFileName != null) {
+                    if (fileSystem.isFileExists(selectedFileName)) {
+                        File selectedFile = fileSystem.getFile(selectedFileName);
+                        String fileType = selectedFile.getType();
+                        int fileSize = selectedFile.getSize();
+                        Object fileData = selectedFile.getData();
+
+                        // Format the file information string
+                        String fileInformation = "Type: " + fileType + "\n" +
+                                "Size: " + fileSize + "\n" +
+                                "Data: " + fileData;
+
+                        // Update the FileInfoTextArea with the file information
+                        FileInfoTextArea.setText(fileInformation);
+                    } else {
+                        FileInfoTextArea.setText("File does not exist");
+                    }
+                }
+            }
+        });
+
+
     }
     public FileSystem getFileSystem() {
         return fileSystem;

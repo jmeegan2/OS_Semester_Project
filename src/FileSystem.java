@@ -14,7 +14,15 @@ public class FileSystem {
         return this.currentDirectory;
     }
 
-
+    public File getFile(String fileName) {
+        List<File> files = currentDirectory.getFiles();
+        for (File file : files) {
+            if (file.getName().equals(fileName)) {
+                return file;
+            }
+        }
+        return null; // File not found
+    }
 
     public void changeDirectory(String path) {
         if (path.equals("/")) {
@@ -47,13 +55,10 @@ public class FileSystem {
         }
     }
     public String searchFile(String fileName) {
-        boolean fileTrueOrFalse;
         if (isFileExists(fileName)) {
             String directory = getCurrentDirectory().getName();
-            fileTrueOrFalse = true;
             return "File '" + fileName + "' exists\nDirectory: " + getCurrentDirectory();
         } else {
-            fileTrueOrFalse = false;
             return "File '" + fileName + "' does not exist";
         }
     }

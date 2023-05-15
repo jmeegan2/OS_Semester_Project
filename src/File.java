@@ -11,6 +11,7 @@ public class File {
         this.type = type;
     }
 
+
     public String getName() {
         return this.name;
     }
