@@ -4,7 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SwingUI_GUI extends JFrame {
     private JPanel MainPanel;
@@ -33,7 +35,7 @@ public class SwingUI_GUI extends JFrame {
     private JButton SendBTN_Search;
     private JPanel SearchPanel;
     private JPanel FileInformationWindow;
-    private JTextField FileInformationWindowTextField;
+    private JTextArea FileInformationWindowTextField;
     private JButton FavoriteButton;
     private JList FavoriteList;
     private JButton CloseBTN;
@@ -68,14 +70,6 @@ public class SwingUI_GUI extends JFrame {
         CreatePanel.setVisible(false);
         CreateBTN.addActionListener(e -> togglePanelVisibility(CreatePanel));
 
-//        SendBTN_Create.addActionListener(e -> {
-//            String fileNameCreate = CreateTextField.getText();
-//            if (!fileNameCreate.isEmpty()) {
-//                fileSystem.createFile(fileNameCreate);
-//                refreshListArea();
-//                CreatePanel.setVisible(false);
-//            }
-//        });
         DeletePanel.setVisible(false);
         DeleteBTN.addActionListener(new ActionListener() {
             @Override
@@ -92,7 +86,35 @@ public class SwingUI_GUI extends JFrame {
                         fileSystem.deleteFile(fileNameDelete);
                         refreshListArea();
                         DeleteTextField.setText("");
+                        if (FavoriteListModel.contains(fileNameDelete)) {
+                            FavoriteListModel.removeElement(fileNameDelete);
+                        }
                         JOptionPane.showMessageDialog(SwingUI_GUI.this, "File " + fileNameDelete +" has been deleted");
+                    } else {
+                        JOptionPane.showMessageDialog(SwingUI_GUI.this, "File does not exist!");
+                    }
+                }
+            }
+        });
+        SendBTN_Update.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String fileNameToUpdate = UpdateTextField.getText();
+                String newValueOfFile = InnerUpdateTextField.getText();
+
+                if (!fileNameToUpdate.isEmpty() && !newValueOfFile.isEmpty()) {
+                    if (fileSystem.isFileExists(fileNameToUpdate)) {
+                        fileSystem.updateFile(fileNameToUpdate, newValueOfFile);
+                        refreshListArea();
+                        UpdateTextField.setText(""); // Clear the UpdateTextField
+                        InnerUpdateTextField.setText(""); // Clear the InnerUpdateTextField
+                        JOptionPane.showMessageDialog(SwingUI_GUI.this, "File (" + fileNameToUpdate + ") has been updated");
+
+                        // If the updated file was in the favorites, update it there too
+                        if (FavoriteListModel.contains(fileNameToUpdate)) {
+                            FavoriteListModel.removeElement(fileNameToUpdate);
+                            FavoriteListModel.addElement(newValueOfFile);
+                        }
                     } else {
                         JOptionPane.showMessageDialog(SwingUI_GUI.this, "File does not exist!");
                     }
@@ -119,6 +141,11 @@ public class SwingUI_GUI extends JFrame {
                         UpdateTextField.setText(""); // Clear the UpdateTextField
                         InnerUpdateTextField.setText(""); // Clear the InnerUpdateTextField
                         JOptionPane.showMessageDialog(SwingUI_GUI.this, "File (" + fileNameToUpdate + ") has been updated");
+                        // If the updated file was in the favorites, update it there too
+                        if (FavoriteListModel.contains(fileNameToUpdate)) {
+                            FavoriteListModel.removeElement(fileNameToUpdate);
+                            FavoriteListModel.addElement(newValueOfFile);
+                        }
                     } else {
                         JOptionPane.showMessageDialog(SwingUI_GUI.this, "File does not exist!");
                     }
@@ -256,10 +283,11 @@ public class SwingUI_GUI extends JFrame {
     private void updateFileList() {
         DefaultListModel<String> model = new DefaultListModel<>(); // Create a DefaultListModel
         List<File> files = fileSystem.getCurrentDirectory().getFiles();
-
+// Keep track of current file names
+        Set<String> currentFileNames = new HashSet<>();
         for (File file : files) {
             String fileName = file.getName();
-
+            currentFileNames.add(fileName);
             // Check if the file is already present in the model
             if (!model.contains(fileName)) {
                 model.addElement(fileName); // Add file name to the model
@@ -267,6 +295,7 @@ public class SwingUI_GUI extends JFrame {
         }
 
         MainListArea.setModel(model); // Set the model to the JList
+
     }
 
     public void setFileSystem(FileSystem fileSystem) {
