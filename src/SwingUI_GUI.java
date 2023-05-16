@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.xml.crypto.Data;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,6 +8,7 @@ import java.awt.event.ComponentEvent;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 
 public class SwingUI_GUI extends JFrame {
     private JPanel MainPanel;
@@ -41,6 +43,10 @@ public class SwingUI_GUI extends JFrame {
     private JButton CloseBTN;
     private JPanel ActualListOfFilesPanel;
     private JTextArea FileInfoTextArea;
+    private JLabel LabelCreate;
+    private JTextField DataField;
+    private JTextField SizeField;
+    private JTextField TypeField;
     private DefaultListModel<String> FavoriteListModel;
     private FileSystem fileSystem;
 
@@ -77,6 +83,30 @@ public class SwingUI_GUI extends JFrame {
                 togglePanelVisibility(DeletePanel);
             }
         });
+        SendBTN_Create.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String fileNameCreate = CreateTextField.getText();
+                Object dataObject = DataField.getText(); // Assuming your data is text
+                Integer sizeValue = Integer.valueOf(SizeField.getText());
+                String typeValue = TypeField.getText();
+
+                if (!fileNameCreate.isEmpty()) {
+                    if (!fileSystem.isFileExists(fileNameCreate)) {
+                        fileSystem.createFile(fileNameCreate, dataObject, sizeValue, typeValue);
+                        refreshListArea();
+                        JOptionPane.showMessageDialog(SwingUI_GUI.this, "File " + fileNameCreate +" has been created");
+                        CreateTextField.setText("");
+                        DataField.setText(""); // Assuming your data is text
+                        SizeField.setText("");
+                        TypeField.setText("");
+                    } else {
+                        JOptionPane.showMessageDialog(SwingUI_GUI.this, "File already exists!");
+                    }
+                }
+            }
+        });
+
         SendBTN_Delete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
