@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.xml.crypto.Data;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,6 +46,8 @@ public class SwingUI_GUI extends JFrame {
     private JTextField DataField;
     private JTextField SizeField;
     private JTextField TypeField;
+    private JTextField DName;
+    private JLabel lad;
     private DefaultListModel<String> FavoriteListModel;
     private FileSystem fileSystem;
 
@@ -86,6 +87,7 @@ public class SwingUI_GUI extends JFrame {
         SendBTN_Create.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String directoryName = DName.getText();
                 String fileNameCreate = CreateTextField.getText();
                 Object dataObject = DataField.getText(); // Assuming your data is text
                 Integer sizeValue = Integer.valueOf(SizeField.getText());
@@ -93,9 +95,10 @@ public class SwingUI_GUI extends JFrame {
 
                 if (!fileNameCreate.isEmpty()) {
                     if (!fileSystem.isFileExists(fileNameCreate)) {
-                        fileSystem.createFile(fileNameCreate, dataObject, sizeValue, typeValue);
+                        fileSystem.createFile(directoryName, fileNameCreate, dataObject, sizeValue, typeValue);
                         refreshListArea();
                         JOptionPane.showMessageDialog(SwingUI_GUI.this, "File " + fileNameCreate +" has been created");
+                        DName.setText("");
                         CreateTextField.setText("");
                         DataField.setText(""); // Assuming your data is text
                         SizeField.setText("");
@@ -266,12 +269,16 @@ public class SwingUI_GUI extends JFrame {
                 if (selectedFileName != null) {
                     if (fileSystem.isFileExists(selectedFileName)) {
                         File selectedFile = fileSystem.getFile(selectedFileName);
+                        String NameDirectory = selectedFile.getDirectoryName();
                         String fileType = selectedFile.getType();
                         int fileSize = selectedFile.getSize();
                         Object fileData = selectedFile.getData();
 
+
                         // Format the file information string
-                        String fileInformation = "Type: " + fileType + "\n" +
+                        String fileInformation =
+                                "Directory Name: "+ NameDirectory +
+                                        "\nType: " + fileType + "\n" +
                                 "Size: " + fileSize + "\n" +
                                 "Data: " + fileData;
 

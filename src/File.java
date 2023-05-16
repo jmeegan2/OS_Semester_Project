@@ -1,10 +1,12 @@
 public class File {
+    private String directoryName;
     private String name;
     private Object data;
     private int size;  // New field
     private String type;  // New field
 
-    public File(String name, Object data, int size, String type) {
+    public File(String directoryName, String name, Object data, int size, String type) {
+        this.directoryName = directoryName;
         this.name = name;
         this.data = data;
         this.size = size;
@@ -28,6 +30,9 @@ public class File {
         return this.type;
     }
 
+    public String getDirectoryName() {  // New getter
+        return this.directoryName;
+    }
     public void setData(Object data) {
         this.data = data;
     }
