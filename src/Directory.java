@@ -39,4 +39,14 @@ public class Directory {
     public void removeSubDirectory(Directory directory) {
         this.subDirectories.remove(directory);
     }
+
+    public Directory getSubDirectoryByName(String selectedDirectoryName) {
+        List<Directory> subDirectories = getSubDirectories();
+        for (Directory subDirectory : subDirectories) {
+            if (subDirectory.getName().equals(selectedDirectoryName)) {
+                return subDirectory;
+            }
+        }
+        return null; // Subdirectory not found
+    }
 }

@@ -2,9 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 
 public class SwingUI_GUI extends JFrame {
@@ -46,6 +45,34 @@ public class SwingUI_GUI extends JFrame {
     private JTextField TypeField;
     private JTextField DName;
     private JLabel lad;
+    private JButton ShowDirectoryButton;
+    private JPanel DirectoryPanel;
+    private JPanel FileSystemNoDirectoryActionsPanel;
+    private JButton CloseDirectoryManagementButton;
+    private JList DirectoryList;
+    private JButton createDirectoryButton;
+    private JButton deleteDirectoryButton;
+    private JTextField createDirectoryTextField;
+    private JButton sendCreateDirectoryButton;
+    private JPanel CreateDirectoryPanel;
+    private JTextField deleteDirectoryTextField;
+    private JButton SendDeleteDirectoryButton;
+    private JPanel DirectoryDeletePanel;
+    private JPanel DirectorySubPanel;
+    private JButton createSubdirectoryButton;
+    private JButton deleteSubdirectoryButton;
+    private JPanel createSubDirectoryPanel;
+    private JPanel deleteSubdirectoryPanel;
+    private JList DirectorySubFileList;
+    private JTextField createSubdirectoryTextField;
+    private JTextField deleteSubdirectoryTextField;
+    private JButton sendCreateSubDirectory;
+    private JButton sendDeleteSubdirectory;
+    private JButton deleteSubPanelFileButton;
+    private JButton sendDeleteFileDirectorySubFilePanel;
+    private JTextField deleteFileDirectorySubFilePanelTextField;
+    private JPanel deleteFileDirectorySubPanel;
+    private JButton closeSpecificDirectoryManagementButton;
     private DefaultListModel<String> FavoriteListModel;
     private FileSystem fileSystem;
 
@@ -82,7 +109,7 @@ public class SwingUI_GUI extends JFrame {
         SearchPanel.setVisible(false);
         FileInformationWindow.setVisible(false);
         DeletePanel.setVisible(false);
-
+        DirectoryPanel.setVisible(false);
 
 
         // TOP OF MAIN PANEL BUTTONS
@@ -109,7 +136,9 @@ public class SwingUI_GUI extends JFrame {
             String typeValue = TypeField.getText();
 
             if (!fileNameCreate.isEmpty()) {
-                if (!fileSystem.isFileExists(fileNameCreate)) {
+                if (fileSystem.findSubDirectory(directoryName) == false) {
+                    JOptionPane.showMessageDialog(SwingUI_GUI.this, "Directory does not exist!");
+                } else if (!fileSystem.isFileExists(fileNameCreate)) {
                     fileSystem.createFile(directoryName, fileNameCreate, dataObject, sizeValue, typeValue);
                     refreshListArea();
                     JOptionPane.showMessageDialog(SwingUI_GUI.this, "File " + fileNameCreate +" has been created");
@@ -123,6 +152,7 @@ public class SwingUI_GUI extends JFrame {
                 }
             }
         });
+
 
         SendButton_Delete.addActionListener(e -> {
             String fileNameDelete = DeleteTextField.getText();
@@ -196,8 +226,10 @@ public class SwingUI_GUI extends JFrame {
         // LISTS
         MainListArea.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                String selectedFileName = MainListArea.getSelectedValue();
-                if (selectedFileName != null) {
+                String selectedFile = MainListArea.getSelectedValue();
+                String random[] = selectedFile.split("/");
+                String selectedFileName = random[random.length - 1];                if (selectedFileName != null) {
+                    System.out.println(selectedFileName);
                     // Retrieve the file information based on the selected file name
                     // Update the FileInformationWindow components
                     ActualListOfFilesPanel.setVisible(false);
@@ -209,6 +241,21 @@ public class SwingUI_GUI extends JFrame {
             }
         });
 
+
+        DirectoryList.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+               String selectedDirectoryName = (String) DirectoryList.getSelectedValue();
+                if (selectedDirectoryName != null) {
+                    DirectoryPanel.setVisible(false);
+                    DirectorySubPanel.setVisible(true);
+                    System.out.println(selectedDirectoryName);
+                    updateDirectorySubFileList(selectedDirectoryName);
+                }
+            }
+        });
+
+
+
         FavoriteList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 String selectedFileName = (String) FavoriteList.getSelectedValue();
@@ -219,6 +266,181 @@ public class SwingUI_GUI extends JFrame {
                     FileInformationWindow.setVisible(true);
                     FileInformationWindowTextField.setText(selectedFileName);
                 }
+            }
+        });
+
+
+
+
+
+
+
+        //DIRECTORY PANEL RELATED
+        // MainListArea setup
+
+        CreateDirectoryPanel.setVisible(false);
+        DirectoryDeletePanel.setVisible(false);
+        DirectorySubPanel.setVisible(false);
+        createSubDirectoryPanel.setVisible(false);
+        deleteSubdirectoryPanel.setVisible(false);
+        deleteFileDirectorySubPanel.setVisible(false);
+        DirectoryList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // Set selection mode
+        DirectoryList.setLayoutOrientation(JList.VERTICAL); // Set layout orientation
+
+
+        ShowDirectoryButton.setPreferredSize(new Dimension(200, 75));
+        CloseDirectoryManagementButton.setPreferredSize(new Dimension(200, 75));
+        createDirectoryButton.setPreferredSize(new Dimension(200, 75));
+        deleteDirectoryButton.setPreferredSize(new Dimension(200, 75));
+
+        ShowDirectoryButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                togglePanelVisibility(DirectoryPanel);
+               togglePanelVisibility(FileSystemNoDirectoryActionsPanel);
+            }
+        });
+
+        deleteDirectoryButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                togglePanelVisibility(DirectoryDeletePanel);
+                CreateDirectoryPanel.setVisible(false);
+            }
+        });
+        CloseDirectoryManagementButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                togglePanelVisibility(DirectoryPanel);
+                togglePanelVisibility(FileSystemNoDirectoryActionsPanel);
+            }
+        });
+
+
+
+
+
+        //END OF DIRECTORY PANEL RELATED
+
+
+        createSubdirectoryButton.setVisible(false);
+        deleteSubdirectoryButton.setVisible(false);
+        deleteSubPanelFileButton.setVisible(false);
+        createDirectoryButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DirectoryDeletePanel.setVisible(false);
+                togglePanelVisibility(CreateDirectoryPanel);
+            }
+        });
+
+        sendCreateDirectoryButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String newDirectoryName = createDirectoryTextField.getText();
+
+                if (!fileSystem.findSubDirectory(newDirectoryName)) {
+                    fileSystem.createDirectory(newDirectoryName);
+                    updateDirectoryList();
+                    createDirectoryTextField.setText(""); // Clear the text field after creating the directory
+                } else {
+                    JOptionPane.showMessageDialog(SwingUI_GUI.this, "Directory already exists!");
+                }
+            }
+        });
+
+
+        deleteDirectoryButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                togglePanelVisibility(CreateDirectoryPanel);
+            }
+        });
+        SendDeleteDirectoryButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String deleteDirectoryName = deleteDirectoryTextField.getText();
+
+                if (fileSystem.findSubDirectory(deleteDirectoryName)) {
+                    int confirmResult = JOptionPane.showConfirmDialog(
+                            SwingUI_GUI.this,
+                            "Are you sure you want to delete the directory '" + deleteDirectoryName + "'?\n" +
+                                    "All files in the directory will be deleted as well.",
+                            "Confirmation",
+                            JOptionPane.YES_NO_OPTION);
+
+                    if (confirmResult == JOptionPane.YES_OPTION) {
+                        // Remove all files within the directory
+                        List<File> filesToDelete = new ArrayList<>();
+                        for (File file : fileSystem.getCurrentDirectory().getFiles()) {
+                            if (file.getDirectoryName().equals(deleteDirectoryName)) {
+                                filesToDelete.add(file);
+                            }
+                        }
+                        for (File file : filesToDelete) {
+                            fileSystem.deleteFile(file.getName());
+                        }
+
+                        // Delete the directory
+                        fileSystem.deleteDirectory(deleteDirectoryName);
+                        updateDirectoryList();
+                        updateFileList();
+                        deleteDirectoryTextField.setText(""); // Clear the text field after deleting the directory
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(SwingUI_GUI.this, "Directory does not exist!");
+                }
+            }
+        });
+
+        createSubdirectoryButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                togglePanelVisibility(createSubDirectoryPanel);
+                deleteSubdirectoryPanel.setVisible(false);
+                deleteFileDirectorySubPanel.setVisible(false);
+            }
+        });
+        deleteSubdirectoryButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                togglePanelVisibility(deleteSubdirectoryPanel);
+                createSubDirectoryPanel.setVisible(false);
+                deleteFileDirectorySubPanel.setVisible(false);
+            }
+        });
+        deleteSubPanelFileButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                togglePanelVisibility(deleteFileDirectorySubPanel);
+                createSubDirectoryPanel.setVisible(false);
+                deleteSubdirectoryPanel.setVisible(false);
+            }
+        });
+        closeSpecificDirectoryManagementButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DirectorySubPanel.setVisible(false);
+                DirectoryPanel.setVisible(true);
+
+            }
+        });
+        sendCreateSubDirectory.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String subDirectoryName = createDirectoryTextField.getText(); // Obtain the name of the new subdirectory from user input or any other source
+
+                // Check if the subdirectory already exists
+                if (fileSystem.findSubDirectory(subDirectoryName)) {
+                    // Display an error message or perform appropriate actions if the subdirectory already exists
+                    return;
+                }
+
+                // Add the subdirectory name to the DirectorySubFileList
+                DefaultListModel<String> model = (DefaultListModel<String>) DirectorySubFileList.getModel();
+                model.addElement(subDirectoryName);
+
+                // Optionally, update the UI or display a success message to indicate that the subdirectory was added to the list
             }
         });
 
@@ -270,25 +492,51 @@ public class SwingUI_GUI extends JFrame {
     // This method refreshes the file list
     private void refreshListArea() {
         updateFileList();
+        updateDirectoryList();
     }
 
     // This method updates the file list in the main area
     private void updateFileList() {
         DefaultListModel<String> model = new DefaultListModel<>(); // Create a DefaultListModel
         List<File> files = fileSystem.getCurrentDirectory().getFiles();
-        // Keep track of current file names
-        Set<String> currentFileNames = new HashSet<>();
+
         for (File file : files) {
+            String directoryName = file.getDirectoryName();
             String fileName = file.getName();
-            currentFileNames.add(fileName);
-            // Check if the file is already present in the model
-            if (!model.contains(fileName)) {
-                model.addElement(fileName); // Add file name to the model
-            }
+            model.addElement(directoryName + "/" + fileName); // Add directory and file name to the model
         }
 
         MainListArea.setModel(model); // Set the model to the JList
     }
+
+    private void updateDirectoryList() {
+        DefaultListModel<String> model = new DefaultListModel<>(); // Create a DefaultListModel
+        List<Directory> directories = fileSystem.getCurrentDirectory().getSubDirectories();
+
+        // Add directories to the model
+        for (Directory directory : directories) {
+            model.addElement(directory.getName());
+        }
+
+        DirectoryList.setModel(model); // Set the model to the JList
+    }
+
+    private void updateDirectorySubFileList(String selectedDirectoryName) {
+        DefaultListModel<String> model = new DefaultListModel<>(); // Create a DefaultListModel
+
+        List<File> files = fileSystem.getCurrentDirectory().getFiles();
+
+        for (File file : files) {
+            if (file.getDirectoryName().equals(selectedDirectoryName)) {
+                String fileName = file.getName();
+                model.addElement(fileName); // Add file name to the model
+            }
+        }
+
+        DirectorySubFileList.setModel(model); // Set the model to the DirectorySubFileList
+    }
+
+
 
     // This method sets the file system
     public void setFileSystem(FileSystem fileSystem) {

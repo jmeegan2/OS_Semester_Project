@@ -6,6 +6,7 @@ public class SystemData {
         fileSystem.createDirectory("music");
         fileSystem.createDirectory("downloads");
 
+
         fileSystem.createFile("documents", "report", "This is some data", 500, "txt");
         fileSystem.createFile("documents", "document", "This is some data", 300, "txt");
         fileSystem.createFile("documents", "note", "This is some data", 250, "txt");

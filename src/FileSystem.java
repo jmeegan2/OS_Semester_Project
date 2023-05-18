@@ -24,36 +24,6 @@ public class FileSystem {
         return null; // File not found
     }
 
-    public void changeDirectory(String path) {
-        if (path.equals("/")) {
-            this.currentDirectory = this.rootDirectory;
-            return;
-        }
-
-        String[] directories = path.split("/");
-
-        for (String directoryName : directories) {
-            if (directoryName.isEmpty()) {
-                continue;
-            }
-
-            boolean found = false;
-
-            for (Directory subDirectory : this.currentDirectory.getSubDirectories()) {
-                if (subDirectory.getName().equals(directoryName)) {
-                    this.currentDirectory = subDirectory;
-                    found = true;
-                    break;
-                }
-
-            }
-
-            if (!found) {
-                System.out.println("Directory not found: " + directoryName);
-                return;
-            }
-        }
-    }
     public String searchFile(String fileName) {
         if (isFileExists(fileName)) {
             String directory = getCurrentDirectory().getName();
@@ -114,17 +84,13 @@ public class FileSystem {
         throw new IllegalArgumentException("File not found: " + fileName);
     }
 
-
-    public void listContents() {
-        System.out.println("Contents of directory " + this.currentDirectory.getName() + ":");
-
+    public boolean findSubDirectory(String directoryName) {
         for (Directory subDirectory : this.currentDirectory.getSubDirectories()) {
-            System.out.println("d " + subDirectory.getName());
+            if (subDirectory.getName().equals(directoryName)) {
+                return true;
+            }
         }
-
-        for (File file : this.currentDirectory.getFiles()) {
-            System.out.println("- " + file.getName());
-        }
+        return false;
     }
 
 
