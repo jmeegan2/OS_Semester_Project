@@ -1,18 +1,19 @@
 public class File {
-    private String directoryName;
+
     private String name;
+    private String directoryName;
     private Object data;
     private int size;  // New field
     private String type;  // New field
 
     public File(String directoryName, String name, Object data, int size, String type) {
-        this.directoryName = directoryName;
+
         this.name = name;
+        this.directoryName = directoryName;
         this.data = data;
         this.size = size;
         this.type = type;
     }
-
 
     public String getName() {
         return this.name;

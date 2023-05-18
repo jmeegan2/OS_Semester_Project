@@ -223,6 +223,29 @@ public class SwingUI_GUI extends JFrame {
                     ActualListOfFilesPanel.setVisible(false);
                     FileInformationWindow.setVisible(true);
                     FileInformationWindowTextField.setText(selectedFileName);
+                    if (selectedFileName != null) {
+                        if (fileSystem.isFileExists(selectedFileName)) {
+                            File selectedFile = fileSystem.getFile(selectedFileName); // Update the selected file
+                            System.out.println(selectedFile.getDirectoryName());
+                            String NameDirectory = selectedFile.getDirectoryName();
+                            String fileType = selectedFile.getType();
+                            int fileSize = selectedFile.getSize();
+                            Object fileData = selectedFile.getData();
+
+
+                            // Format the file information string
+                            String fileInformation =
+                                    "Directory Name: "+ NameDirectory +
+                                            "\nType: " + fileType +
+                                            "\nSize: " + fileSize +
+                                            "\nData: " + fileData;
+                            // Update the FileInfoTextArea with the file information
+                            FileInfoTextArea.setText(fileInformation);
+                        } else {
+                            FileInfoTextArea.setText("File does not exist");
+                        }
+                    }
+
 
                 }
             }
@@ -262,37 +285,11 @@ public class SwingUI_GUI extends JFrame {
                 }
             }
         });
-        FileInfoTextArea.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                String selectedFileName = FileInformationWindowTextField.getText();
-                if (selectedFileName != null) {
-                    if (fileSystem.isFileExists(selectedFileName)) {
-                        File selectedFile = fileSystem.getFile(selectedFileName);
-                        String NameDirectory = selectedFile.getDirectoryName();
-                        String fileType = selectedFile.getType();
-                        int fileSize = selectedFile.getSize();
-                        Object fileData = selectedFile.getData();
 
-
-                        // Format the file information string
-                        String fileInformation =
-                                "Directory Name: "+ NameDirectory +
-                                        "\nType: " + fileType + "\n" +
-                                "Size: " + fileSize + "\n" +
-                                "Data: " + fileData;
-
-                        // Update the FileInfoTextArea with the file information
-                        FileInfoTextArea.setText(fileInformation);
-                    } else {
-                        FileInfoTextArea.setText("File does not exist");
-                    }
-                }
-            }
-        });
 
 
     }
+
     public FileSystem getFileSystem() {
         return fileSystem;
     }
