@@ -2,8 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,34 +10,34 @@ import java.util.Set;
 public class SwingUI_GUI extends JFrame {
     private JPanel MainPanel;
     private JScrollPane SideBarScroll;
-    private JButton SearchBTN;
-    private JButton DeleteBTN;
-    private JButton UpdateBTN;
-    private JButton CreateBTN;
+    private JButton ShowPanelSearchButton;
+    private JButton ShowPanelDeleteButton;
+    private JButton ShowPanelUpdateButton;
+    private JButton ShowPanelCreateButton;
     private JList<String> MainListArea; // Updated to JList
     private JPanel ListArea;
     private JButton RefreshBTN;
     private JTextField CreateTextField;
     private JPanel CreatePanel;
-    private JButton SendBTN_Create;
+    private JButton SendButton_Create;
     private JPanel DeletePanel;
-    private JButton SendBTN_Delete;
+    private JButton SendButton_Delete;
     private JTextField DeleteTextField;
     private JLabel DeleteLabel;
-    private JButton SendBTN_Update;
+    private JButton SendButton_Update;
     private JTextField UpdateTextField;
     private JPanel UpdatePanel;
     private JLabel updatelabel;
     private JTextField InnerUpdateTextField;
     private JLabel searchLabel;
     private JTextField SearchTextField;
-    private JButton SendBTN_Search;
+    private JButton SendButton_Search;
     private JPanel SearchPanel;
     private JPanel FileInformationWindow;
     private JTextArea FileInformationWindowTextField;
-    private JButton FavoriteButton;
+    private JButton AddFavoriteButton;
     private JList FavoriteList;
-    private JButton CloseBTN;
+    private JButton ShowPanelCloseButton;
     private JPanel ActualListOfFilesPanel;
     private JTextArea FileInfoTextArea;
     private JLabel LabelCreate;
@@ -52,168 +50,150 @@ public class SwingUI_GUI extends JFrame {
     private FileSystem fileSystem;
 
     public SwingUI_GUI(String title) {
+        // Initializing instance variables
         super(title);
         this.fileSystem = new FileSystem();
+
+    // Model setup
         FavoriteListModel = new DefaultListModel<>();
         FavoriteList.setModel(FavoriteListModel);
 
-        SearchBTN.setPreferredSize(new Dimension(200, 75));
-        DeleteBTN.setPreferredSize(new Dimension(200, 75));
-        UpdateBTN.setPreferredSize(new Dimension(200, 75));
-        CreateBTN.setPreferredSize(new Dimension(200, 75));
+    // Button setup
+        ShowPanelSearchButton.setPreferredSize(new Dimension(200, 75));
+        ShowPanelDeleteButton.setPreferredSize(new Dimension(200, 75));
+        ShowPanelUpdateButton.setPreferredSize(new Dimension(200, 75));
+        ShowPanelCreateButton.setPreferredSize(new Dimension(200, 75));
         RefreshBTN.setPreferredSize(new Dimension(200, 75));
+        RefreshBTN.addActionListener(e -> refreshListArea());
 
+    // MainListArea setup
         MainListArea.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // Set selection mode
         MainListArea.setLayoutOrientation(JList.VERTICAL); // Set layout orientation
 
+    // Frame setup
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setContentPane(MainPanel);
         this.pack();
         this.setLocationRelativeTo(null);
 
-        RefreshBTN.addActionListener(e -> refreshListArea());
-
-
+    // Initial panel visibility setup
         CreatePanel.setVisible(false);
-        CreateBTN.addActionListener(e -> togglePanelVisibility(CreatePanel));
-
-        DeletePanel.setVisible(false);
-        DeleteBTN.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                togglePanelVisibility(DeletePanel);
-            }
-        });
-        SendBTN_Create.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String directoryName = DName.getText();
-                String fileNameCreate = CreateTextField.getText();
-                Object dataObject = DataField.getText(); // Assuming your data is text
-                Integer sizeValue = Integer.valueOf(SizeField.getText());
-                String typeValue = TypeField.getText();
-
-                if (!fileNameCreate.isEmpty()) {
-                    if (!fileSystem.isFileExists(fileNameCreate)) {
-                        fileSystem.createFile(directoryName, fileNameCreate, dataObject, sizeValue, typeValue);
-                        refreshListArea();
-                        JOptionPane.showMessageDialog(SwingUI_GUI.this, "File " + fileNameCreate +" has been created");
-                        DName.setText("");
-                        CreateTextField.setText("");
-                        DataField.setText(""); // Assuming your data is text
-                        SizeField.setText("");
-                        TypeField.setText("");
-                    } else {
-                        JOptionPane.showMessageDialog(SwingUI_GUI.this, "File already exists!");
-                    }
-                }
-            }
-        });
-
-        SendBTN_Delete.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String fileNameDelete = DeleteTextField.getText();
-                if (!fileNameDelete.isEmpty()) {
-                    if (fileSystem.isFileExists(fileNameDelete)) {
-                        fileSystem.deleteFile(fileNameDelete);
-                        refreshListArea();
-                        DeleteTextField.setText("");
-                        if (FavoriteListModel.contains(fileNameDelete)) {
-                            FavoriteListModel.removeElement(fileNameDelete);
-                        }
-                        JOptionPane.showMessageDialog(SwingUI_GUI.this, "File " + fileNameDelete +" has been deleted");
-                    } else {
-                        JOptionPane.showMessageDialog(SwingUI_GUI.this, "File does not exist!");
-                    }
-                }
-            }
-        });
-        SendBTN_Update.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String fileNameToUpdate = UpdateTextField.getText();
-                String newValueOfFile = InnerUpdateTextField.getText();
-
-                if (!fileNameToUpdate.isEmpty() && !newValueOfFile.isEmpty()) {
-                    if (fileSystem.isFileExists(fileNameToUpdate)) {
-                        fileSystem.updateFile(fileNameToUpdate, newValueOfFile);
-                        refreshListArea();
-                        UpdateTextField.setText(""); // Clear the UpdateTextField
-                        InnerUpdateTextField.setText(""); // Clear the InnerUpdateTextField
-                        JOptionPane.showMessageDialog(SwingUI_GUI.this, "File (" + fileNameToUpdate + ") has been updated");
-
-                        // If the updated file was in the favorites, update it there too
-                        if (FavoriteListModel.contains(fileNameToUpdate)) {
-                            FavoriteListModel.removeElement(fileNameToUpdate);
-                            FavoriteListModel.addElement(newValueOfFile);
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(SwingUI_GUI.this, "File does not exist!");
-                    }
-                }
-            }
-        });
         UpdatePanel.setVisible(false);
-        UpdateBTN.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                togglePanelVisibility(UpdatePanel);
-            }
-        });
-        SendBTN_Update.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String fileNameToUpdate = UpdateTextField.getText();
-                String newValueOfFile = InnerUpdateTextField.getText();
-
-                if (!fileNameToUpdate.isEmpty() && !newValueOfFile.isEmpty()) {
-                    if (fileSystem.isFileExists(fileNameToUpdate)) {
-                        fileSystem.updateFile(fileNameToUpdate, newValueOfFile);
-                        refreshListArea();
-                        UpdateTextField.setText(""); // Clear the UpdateTextField
-                        InnerUpdateTextField.setText(""); // Clear the InnerUpdateTextField
-                        JOptionPane.showMessageDialog(SwingUI_GUI.this, "File (" + fileNameToUpdate + ") has been updated");
-                        // If the updated file was in the favorites, update it there too
-                        if (FavoriteListModel.contains(fileNameToUpdate)) {
-                            FavoriteListModel.removeElement(fileNameToUpdate);
-                            FavoriteListModel.addElement(newValueOfFile);
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(SwingUI_GUI.this, "File does not exist!");
-                    }
-                }
-            }
-        });
         SearchPanel.setVisible(false);
-        SearchBTN.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            togglePanelVisibility(SearchPanel);
-            }
-        });
-        SendBTN_Search.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String fileToBeSearched = SearchTextField.getText();
-                String result = fileSystem.searchFile(fileToBeSearched);
-                    if (fileSystem.isFileExists(fileToBeSearched)) {
-                        // Retrieve the file information based on the selected file name
-                        JOptionPane.showMessageDialog(SwingUI_GUI.this, result);
-                        SearchTextField.setText(""); // Clear the SearchTextField
-                        SearchPanel.setVisible(false); // Hide the SearchPanel
-                        // Update the FileInformationWindow components
-                        ActualListOfFilesPanel.setVisible(false);
-                        FileInformationWindowTextField.setText(fileToBeSearched);
-                        FileInformationWindow.setVisible(true);
-                    }
-                    else {
-                        JOptionPane.showMessageDialog(SwingUI_GUI.this, result);
-                    }
-                }
+        FileInformationWindow.setVisible(false);
+        DeletePanel.setVisible(false);
+
+
+
+        // TOP OF MAIN PANEL BUTTONS
+        ShowPanelCloseButton.addActionListener(e -> {
+            togglePanelVisibility(FileInformationWindow);
+            togglePanelVisibility(ActualListOfFilesPanel);
         });
 
-        FileInformationWindow.setVisible(false);
+        ShowPanelUpdateButton.addActionListener(e -> togglePanelVisibility(UpdatePanel));
+
+        ShowPanelSearchButton.addActionListener(e -> togglePanelVisibility(SearchPanel));
+
+        ShowPanelCreateButton.addActionListener(e -> togglePanelVisibility(CreatePanel));
+
+        ShowPanelDeleteButton.addActionListener(e -> togglePanelVisibility(DeletePanel));
+
+
+        // INNER JPANEL BUTTONS THAT DO CRUD
+        SendButton_Create.addActionListener(e -> {
+            String directoryName = DName.getText();
+            String fileNameCreate = CreateTextField.getText();
+            Object dataObject = DataField.getText(); // Assuming your data is text
+            Integer sizeValue = Integer.valueOf(SizeField.getText());
+            String typeValue = TypeField.getText();
+
+            if (!fileNameCreate.isEmpty()) {
+                if (!fileSystem.isFileExists(fileNameCreate)) {
+                    fileSystem.createFile(directoryName, fileNameCreate, dataObject, sizeValue, typeValue);
+                    refreshListArea();
+                    JOptionPane.showMessageDialog(SwingUI_GUI.this, "File " + fileNameCreate +" has been created");
+                    DName.setText("");
+                    CreateTextField.setText("");
+                    DataField.setText(""); // Assuming your data is text
+                    SizeField.setText("");
+                    TypeField.setText("");
+                } else {
+                    JOptionPane.showMessageDialog(SwingUI_GUI.this, "File already exists!");
+                }
+            }
+        });
+
+        SendButton_Delete.addActionListener(e -> {
+            String fileNameDelete = DeleteTextField.getText();
+            if (!fileNameDelete.isEmpty()) {
+                if (fileSystem.isFileExists(fileNameDelete)) {
+                    fileSystem.deleteFile(fileNameDelete);
+                    refreshListArea();
+                    DeleteTextField.setText("");
+                    if (FavoriteListModel.contains(fileNameDelete)) {
+                        FavoriteListModel.removeElement(fileNameDelete);
+                    }
+                    JOptionPane.showMessageDialog(SwingUI_GUI.this, "File " + fileNameDelete +" has been deleted");
+                } else {
+                    JOptionPane.showMessageDialog(SwingUI_GUI.this, "File does not exist!");
+                }
+            }
+        });
+
+
+        SendButton_Update.addActionListener(e -> {
+            String fileNameToUpdate = UpdateTextField.getText();
+            String newValueOfFile = InnerUpdateTextField.getText();
+
+            if (!fileNameToUpdate.isEmpty() && !newValueOfFile.isEmpty()) {
+                if (fileSystem.isFileExists(fileNameToUpdate)) {
+                    fileSystem.updateFile(fileNameToUpdate, newValueOfFile);
+                    refreshListArea();
+                    UpdateTextField.setText(""); // Clear the UpdateTextField
+                    InnerUpdateTextField.setText(""); // Clear the InnerUpdateTextField
+                    JOptionPane.showMessageDialog(SwingUI_GUI.this, "File (" + fileNameToUpdate + ") has been updated");
+                    // If the updated file was in the favorites, update it there too
+                    if (FavoriteListModel.contains(fileNameToUpdate)) {
+                        FavoriteListModel.removeElement(fileNameToUpdate);
+                        FavoriteListModel.addElement(newValueOfFile);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(SwingUI_GUI.this, "File does not exist!");
+                }
+            }
+        });
+
+        SendButton_Search.addActionListener(e -> {
+            String fileToBeSearched = SearchTextField.getText();
+            String result = fileSystem.searchFile(fileToBeSearched);
+            if (fileSystem.isFileExists(fileToBeSearched)) {
+                // Retrieve the file information based on the selected file name
+                JOptionPane.showMessageDialog(SwingUI_GUI.this, result);
+                SearchTextField.setText(""); // Clear the SearchTextField
+                SearchPanel.setVisible(false); // Hide the SearchPanel
+                // Update the FileInformationWindow components
+                ActualListOfFilesPanel.setVisible(false);
+                FileInformationWindowTextField.setText(fileToBeSearched);
+                FileInformationWindow.setVisible(true);
+            }
+            else {
+                JOptionPane.showMessageDialog(SwingUI_GUI.this, result);
+            }
+        });
+
+
+        AddFavoriteButton.addActionListener(e -> {
+            String fileToBeAddedToFavoriteList = FileInformationWindowTextField.getText();
+            if (FavoriteListModel.contains(fileToBeAddedToFavoriteList)) {
+                JOptionPane.showMessageDialog(SwingUI_GUI.this, "File is already in the favorite list!");
+            } else {
+                FavoriteListModel.addElement(fileToBeAddedToFavoriteList);
+            }
+        });
+
+
+        // LISTS
         MainListArea.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 String selectedFileName = MainListArea.getSelectedValue();
@@ -223,52 +203,9 @@ public class SwingUI_GUI extends JFrame {
                     ActualListOfFilesPanel.setVisible(false);
                     FileInformationWindow.setVisible(true);
                     FileInformationWindowTextField.setText(selectedFileName);
-                    if (selectedFileName != null) {
-                        if (fileSystem.isFileExists(selectedFileName)) {
-                            File selectedFile = fileSystem.getFile(selectedFileName); // Update the selected file
-                            System.out.println(selectedFile.getDirectoryName());
-                            String NameDirectory = selectedFile.getDirectoryName();
-                            String fileType = selectedFile.getType();
-                            int fileSize = selectedFile.getSize();
-                            Object fileData = selectedFile.getData();
 
-
-                            // Format the file information string
-                            String fileInformation =
-                                    "Directory Name: "+ NameDirectory +
-                                            "\nType: " + fileType +
-                                            "\nSize: " + fileSize +
-                                            "\nData: " + fileData;
-                            // Update the FileInfoTextArea with the file information
-                            FileInfoTextArea.setText(fileInformation);
-                        } else {
-                            FileInfoTextArea.setText("File does not exist");
-                        }
-                    }
-
-
+                    updateFileInfo(selectedFileName);
                 }
-            }
-        });
-
-
-        FavoriteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String fileToBeAddedToFavoriteList = FileInformationWindowTextField.getText();
-                if (FavoriteListModel.contains(fileToBeAddedToFavoriteList)) {
-                    JOptionPane.showMessageDialog(SwingUI_GUI.this, "File is already in the favorite list!");
-                } else {
-                    FavoriteListModel.addElement(fileToBeAddedToFavoriteList);
-                }
-            }
-        });
-        CloseBTN.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                togglePanelVisibility(FileInformationWindow);
-                togglePanelVisibility(ActualListOfFilesPanel);
             }
         });
 
@@ -281,12 +218,9 @@ public class SwingUI_GUI extends JFrame {
                     ActualListOfFilesPanel.setVisible(false);
                     FileInformationWindow.setVisible(true);
                     FileInformationWindowTextField.setText(selectedFileName);
-
                 }
             }
         });
-
-
 
     }
 
@@ -310,14 +244,39 @@ public class SwingUI_GUI extends JFrame {
         frame.refreshListArea();
     }
 
+    // Methods used throughout the GUI enabling CRUD actions and view changes
+    private void updateFileInfo(String fileName) {
+        if (fileSystem.isFileExists(fileName)) {
+            File selectedFile = fileSystem.getFile(fileName);
+            String NameDirectory = selectedFile.getDirectoryName();
+            String fileType = selectedFile.getType();
+            int fileSize = selectedFile.getSize();
+            Object fileData = selectedFile.getData();
 
-    private void refreshListArea() {
-      updateFileList();
+            // Format the file information string
+            String fileInformation =
+                    "Directory Name: "+ NameDirectory +
+                            "\nType: " + fileType +
+                            "\nSize: " + fileSize +
+                            "\nData: " + fileData;
+
+            // Update the FileInfoTextArea with the file information
+            FileInfoTextArea.setText(fileInformation);
+        } else {
+            FileInfoTextArea.setText("File does not exist");
+        }
     }
+
+    // This method refreshes the file list
+    private void refreshListArea() {
+        updateFileList();
+    }
+
+    // This method updates the file list in the main area
     private void updateFileList() {
         DefaultListModel<String> model = new DefaultListModel<>(); // Create a DefaultListModel
         List<File> files = fileSystem.getCurrentDirectory().getFiles();
-// Keep track of current file names
+        // Keep track of current file names
         Set<String> currentFileNames = new HashSet<>();
         for (File file : files) {
             String fileName = file.getName();
@@ -329,16 +288,19 @@ public class SwingUI_GUI extends JFrame {
         }
 
         MainListArea.setModel(model); // Set the model to the JList
-
     }
 
+    // This method sets the file system
     public void setFileSystem(FileSystem fileSystem) {
         this.fileSystem = fileSystem;
     }
+
+    // This method toggles the visibility of a given panel
     private void togglePanelVisibility(JPanel panel) {
         boolean isPanelVisible = panel.isVisible(); // Get the current visibility state
         panel.setVisible(!isPanelVisible); // Toggle the visibility of the panel
     }
+
 
     private void createUIComponents() {
         // TODO: place custom component creation code here

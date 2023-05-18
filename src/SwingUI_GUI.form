@@ -34,7 +34,7 @@
             </properties>
             <border type="none"/>
             <children>
-              <component id="ec4cf" class="javax.swing.JButton" binding="SearchBTN">
+              <component id="ec4cf" class="javax.swing.JButton" binding="ShowPanelSearchButton">
                 <constraints>
                   <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -45,7 +45,7 @@
                   <text value="Search"/>
                 </properties>
               </component>
-              <component id="4b58f" class="javax.swing.JButton" binding="CreateBTN">
+              <component id="4b58f" class="javax.swing.JButton" binding="ShowPanelCreateButton">
                 <constraints>
                   <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -65,7 +65,7 @@
                   <text value="Refresh"/>
                 </properties>
               </component>
-              <component id="fcd6d" class="javax.swing.JButton" binding="DeleteBTN">
+              <component id="fcd6d" class="javax.swing.JButton" binding="ShowPanelDeleteButton">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -74,7 +74,7 @@
                   <text value="Delete"/>
                 </properties>
               </component>
-              <component id="bfdee" class="javax.swing.JButton" binding="UpdateBTN">
+              <component id="bfdee" class="javax.swing.JButton" binding="ShowPanelUpdateButton">
                 <constraints>
                   <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -142,7 +142,7 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="516f5" class="javax.swing.JButton" binding="FavoriteButton">
+                  <component id="516f5" class="javax.swing.JButton" binding="AddFavoriteButton">
                     <constraints>
                       <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -151,7 +151,7 @@
                       <text value="Favorite"/>
                     </properties>
                   </component>
-                  <component id="bb7b5" class="javax.swing.JButton" binding="CloseBTN">
+                  <component id="bb7b5" class="javax.swing.JButton" binding="ShowPanelCloseButton">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -297,7 +297,7 @@
                   <text value="Type"/>
                 </properties>
               </component>
-              <component id="9a446" class="javax.swing.JButton" binding="SendBTN_Create">
+              <component id="9a446" class="javax.swing.JButton" binding="SendButton_Create">
                 <constraints>
                   <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -335,7 +335,7 @@
             </properties>
             <border type="none"/>
             <children>
-              <component id="a408f" class="javax.swing.JButton" binding="SendBTN_Delete">
+              <component id="a408f" class="javax.swing.JButton" binding="SendButton_Delete">
                 <constraints>
                   <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -415,7 +415,7 @@
                   <text value="File to be updated"/>
                 </properties>
               </component>
-              <component id="6ce3" class="javax.swing.JButton" binding="SendBTN_Update">
+              <component id="6ce3" class="javax.swing.JButton" binding="SendButton_Update">
                 <constraints>
                   <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -476,7 +476,7 @@
                   <font name=".AppleSystemUIFont" size="14"/>
                 </properties>
               </component>
-              <component id="35cd8" class="javax.swing.JButton" binding="SendBTN_Search">
+              <component id="35cd8" class="javax.swing.JButton" binding="SendButton_Search">
                 <constraints>
                   <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="4" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
